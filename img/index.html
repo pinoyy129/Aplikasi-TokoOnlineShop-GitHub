@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Abina Fashion — Toko Baju Wanita Elegan</title>
+
+  <!-- W3.CSS + Font -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink-light: #ffdde6;
+      --pink-mid: #ff9bb3;
+      --pink-dark: #ff5c8a;
+      --accent: #ff4081;
+      --muted: #6b6b6b;
+    }
+
+    html,body { height:100%; }
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      margin:0;
+      background: linear-gradient(135deg, var(--pink-light) 0%, var(--pink-mid) 50%, var(--pink-dark) 100%);
+      color: #222;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      scroll-behavior: smooth;
+    }
+
+    /* Top navbar */
+    .topbar {
+      backdrop-filter: blur(6px);
+      background: linear-gradient(90deg, rgba(255,92,138,0.9), rgba(255,64,129,0.9));
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+    }
+    .brand { font-weight:700; font-size:1.125rem; letter-spacing:0.2px; }
+
+    /* Hero */
+    .hero {
+      padding:48px 18px;
+      text-align:center;
+      color:#fff;
+    }
+    .hero h1 { font-size:2rem; margin:0 0 8px; font-weight:700;}
+    .hero p { margin:0 0 18px; opacity:0.95; }
+
+    /* Product grid */
+    .catalog { max-width:1200px; margin: 18px auto 40px; }
+    .product-card {
+      background: #fff;
+      border-radius: 14px;
+      padding:12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      transition: transform .22s ease, box-shadow .22s ease;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+    .product-img { border-radius:10px; width:100%; height:220px; object-fit:cover; }
+    .price-row { display:flex; gap:8px; align-items:center; }
+    .orig-price { text-decoration: line-through; color:var(--muted); font-size:0.95rem; }
+    .sale-price { color:var(--accent); font-weight:700; font-size:1.05rem; }
+    .badge { background: linear-gradient(90deg,var(--pink-mid),var(--pink-dark)); color:#fff; font-weight:600; padding:6px 8px; border-radius:10px; font-size:.8rem; }
+
+    /* cart sidebar */
+    .cart-btn { position:fixed; right:18px; bottom:18px; z-index:999; border-radius:50px; padding:12px 18px; box-shadow:0 6px 18px rgba(0,0,0,0.18); }
+    .cart-panel { width:360px; max-width:95vw; }
+    .muted { color:var(--muted); font-size:0.95rem; }
+
+    /* about section */
+    .about { max-width:1100px; margin: 18px auto 40px; background: rgba(255,255,255,0.9); padding:26px; border-radius:12px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+
+    /* promo */
+    .promo-banner { max-width:1100px; margin: 0 auto 30px; padding:18px; border-radius:12px; display:flex; gap:18px; align-items:center; background: linear-gradient(90deg, rgba(255,255,255,0.92), rgba(255,255,255,0.86)); }
+    .promo-left { flex:1; }
+    .promo-right { width:220px; text-align:center; }
+
+    /* checkout modal */
+    .w3-modal-content { border-radius:12px; overflow:hidden; }
+
+    /* responsive grid tweaks */
+    @media (min-width:992px){
+      .grid { display:grid; grid-template-columns: repeat(4,1fr); gap:18px; }
+    }
+    @media (max-width:991px){
+      .grid { display:grid; grid-template-columns: repeat(2,1fr); gap:12px; }
+      .hero h1{ font-size:1.5rem; }
+      .product-img{ height:160px; }
+    }
+    @media (max-width:480px){
+      .grid { grid-template-columns: 1fr; }
+      .hero{ padding:30px 12px; }
+      .brand{ font-size:1rem; }
+    }
+
+    /* small helpers */
+    .text-right { text-align:right; }
+    .small { font-size:0.92rem; color:var(--muted); }
+    .btn-primary { background: linear-gradient(90deg,var(--pink-mid),var(--pink-dark)); color:#fff; border: none; }
+    .btn-outline { border:1px solid rgba(0,0,0,0.06); background:white; color:#222; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <div class="w3-bar topbar w3-padding-small">
+    <div class="w3-bar-item brand w3-hide-small">Abina Fashion</div>
+
+    <a href="#home" class="w3-bar-item w3-button w3-hide-small">Home</a>
+    <a href="#catalog" class="w3-bar-item w3-button">Katalog</a>
+    <a href="#promo" class="w3-bar-item w3-button w3-hide-small">Promo</a>
+    <a href="#about" class="w3-bar-item w3-button w3-hide-small">Tentang Kami</a>
+    <a href="#contact" class="w3-bar-item w3-button w3-hide-small">Kontak</a>
+
+    <div class="w3-right w3-bar-item">
+      <button class="w3-button w3-white w3-round cart-btn" onclick="toggleCart()">
+        Keranjang (<span id="cartCount">0</span>)
+      </button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header id="home" class="hero">
+    <h1>Abina Fashion</h1>
+    <p>Koleksi baju wanita elegan — kualitas premium, desain modern.</p>
+    <div style="max-width:1100px;margin:18px auto 0;">
+      <input id="searchInput" class="w3-input w3-round-large" type="search" placeholder="Cari produk (mis. 'Dress', 'Blouse')" oninput="renderCatalog()" />
+    </div>
+  </header>
+
+  <!-- PROMO -->
+  <section id="promo" class="promo-banner" style="margin-top:8px;">
+    <div class="promo-left">
+      <h3 style="margin:0 0 6px 0">Promo Minggu Ini</h3>
+      <p class="small" style="margin:0 0 6px 0">Diskon hingga 40% untuk koleksi terpilih. Harga yang ditampilkan sudah mencerminkan diskon. Lihat detail pada setiap produk.</p>
+      <div style="display:flex; gap:10px;">
+        <button class="w3-button btn-primary w3-round" onclick="scrollToSection('catalog')">Lihat Koleksi</button>
+        <button class="w3-button btn-outline w3-round" onclick="scrollToSection('checkout')">Checkout Sekarang</button>
+      </div>
+    </div>
+    <div class="promo-right">
+      <div class="badge" style="display:inline-block;padding:10px 14px;">DISKON HINGGA 40%</div>
+    </div>
+  </section>
+
+  <!-- CATALOG -->
+  <main id="catalog" class="catalog">
+    <div style="display:flex; gap:14px; align-items:center; justify-content:space-between; margin-bottom:12px;">
+      <div>
+        <h2 style="margin:0">Katalog Produk</h2>
+        <div class="small">Pilih ukuran dan jumlah di halaman checkout</div>
+      </div>
+      <div class="small muted">Pembayaran: COD, Transfer Bank, E-Wallet · Pengiriman: J&T, SiCepat, GrabExpress, Ninja Xpress</div>
+    </div>
+
+    <div id="productGrid" class="grid"></div>
+  </main>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <div style="display:flex; gap:18px; flex-wrap:wrap; align-items:center;">
+      <div style="flex:1; min-width:260px;">
+        <h3 style="margin-top:0">Tentang Abina Fashion</h3>
+        <p class="small">Abina Fashion berdiri sejak 2020 dengan fokus pada desain elegan, bahan berkualitas, dan detail jahitan yang rapi. Misi kami adalah membantu wanita merasa percaya diri dan nyaman dalam busana sehari-hari atau acara khusus.</p>
+        <ul class="small" style="margin-top:10px;">
+          <li>Material: katun premium, satin, dan rajutan lembut</li>
+          <li>Kontrol kualitas ketat sebelum pengiriman</li>
+          <li>Layanan pelanggan responsif dan pengembalian mudah</li>
+        </ul>
+      </div>
+      <div style="width:360px;">
+        <img src="\xampp\htdocs\website\foto toko.jpg" alt="Team" style="width:100%; border-radius:10px; display:block;">
+      </div>
+    </div>
+  </section>
+
+  <!-- CHECKOUT SECTION (anchor target) -->
+  <section id="checkout" style="max-width:1100px;margin: 24px auto 80px;">
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:320px;">
+        <div class="w3-card w3-round w3-white" style="padding:14px;">
+          <h3 style="margin-top:0">Keranjang</h3>
+          <div id="cartItemsContainer" class="small muted">Keranjang kosong.</div>
+          <div style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between;">
+              <div class="small">Subtotal</div>
+              <div id="subtotalText" class="small">Rp 0</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:6px;">
+              <div class="small">Total Diskon</div>
+              <div id="discountText" class="small">Rp 0</div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:6px;">
+              <div class="small">Biaya Pengiriman</div>
+              <div id="shippingText" class="small">Rp 0</div>
+            </div>
+            <hr>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="font-weight:700">Total Bayar</div>
+              <div id="grandTotalText" style="font-weight:700; color:var(--accent)">Rp 0</div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:10px;">
+              <button class="w3-button btn-primary w3-round" onclick="openCheckoutModal()">Checkout</button>
+              <button class="w3-button w3-white w3-round btn-outline" onclick="clearCart()">Kosongkan</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info & Shipping selector -->
+      <div style="width:320px; min-width:260px;">
+        <div class="w3-card w3-round w3-white" style="padding:14px;">
+          <h4 style="margin-top:0">Pengiriman & Pembayaran</h4>
+
+          <label class="small">Pilih Jasa Pengiriman</label>
+          <select id="shipSelect" class="w3-select w3-border w3-round" onchange="updateTotals()">
+            <option value="NONE" selected>Pilih jasa pengiriman</option>
+            <option value="J&T" data-cost="15000">J&T — Rp 15.000 (2-4 hari)</option>
+            <option value="SiCepat" data-cost="18000">SiCepat — Rp 18.000 (1-3 hari)</option>
+            <option value="GrabExpress" data-cost="22000">GrabExpress — Rp 22.000 (1 hari)</option>
+            <option value="Ninja" data-cost="20000">Ninja Xpress — Rp 20.000 (2-3 hari)</option>
+          </select>
+
+          <div style="margin-top:12px;">
+            <label class="small">Metode Pembayaran</label>
+            <select id="paySelect" class="w3-select w3-border w3-round">
+              <option value="COD">COD (Bayar di tempat)</option>
+              <option value="Transfer">Transfer Bank</option>
+              <option value="E-Wallet">E-Wallet</option>
+            </select>
+          </div>
+
+          <div style="margin-top:12px;">
+            <label class="small">Estimasi Berat & Biaya</label>
+            <div class="small muted">Biaya pengiriman dihitung per paket standar; jasa express lebih cepat dengan biaya lebih tinggi.</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="about" style="margin-bottom:80px;">
+    <h3 style="margin-top:0">Kontak</h3>
+    <div style="display:flex; gap:18px; flex-wrap:wrap;">
+      <div style="flex:1; min-width:260px;">
+        <p class="small">Butuh bantuan? Hubungi layanan pelanggan kami.</p>
+        <p class="small"><strong>Lokasi:</strong> Semarang, Jawa Tengah</p>
+        <p class="small"><strong>Telepon:</strong> 0812-3456-7890</p>
+        <p class="small"><strong>Email:</strong> abinafashion@gmail.com</p>
+      </div>
+      <div style="width:360px;">
+        <form id="contactForm" class="w3-white w3-round" style="padding:12px;" onsubmit="event.preventDefault(); alert('Pesan terkirim.'); this.reset();">
+          <label class="small">Nama</label>
+          <input class="w3-input w3-border w3-round" required />
+          <label class="small" style="margin-top:8px;">Email</label>
+          <input type="email" class="w3-input w3-border w3-round" required />
+          <label class="small" style="margin-top:8px;">Pesan</label>
+          <textarea class="w3-input w3-border w3-round" rows="3" required></textarea>
+          <div style="margin-top:10px;">
+            <button class="w3-button btn-primary w3-round" type="submit">Kirim</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CART SIDEBAR (W3 Modal used as panel) -->
+  <div id="cartPanel" class="w3-modal" style="display:none">
+    <div class="w3-modal-content w3-animate-right w3-right cart-panel">
+      <header class="w3-container" style="display:flex; justify-content:space-between; align-items:center; background:linear-gradient(90deg,var(--pink-mid),var(--pink-dark)); color:white;">
+        <h4 style="margin:8px 0;">Keranjang</h4>
+        <button class="w3-button w3-transparent" onclick="toggleCart()" style="color:white">Tutup</button>
+      </header>
+      <div class="w3-container" style="padding:12px;">
+        <div id="cartPanelBody" class="small muted">Keranjang kosong.</div>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button class="w3-button btn-primary w3-round" onclick="openCheckoutModal(); toggleCart()">Checkout</button>
+          <button class="w3-button w3-white w3-round btn-outline" onclick="clearCart()">Kosongkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="w3-modal" style="display:none">
+    <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+      <header class="w3-container" style="background:linear-gradient(90deg,var(--pink-mid),var(--pink-dark)); color:white">
+        <h4>Formulir Pembayaran & Pengantaran</h4>
+      </header>
+
+      <div class="w3-container" style="padding:18px;">
+        <form id="checkoutForm" onsubmit="handleCheckout(event)" class="w3-small">
+          <label>Nama Lengkap</label>
+          <input id="buyerName" class="w3-input w3-border w3-round" required>
+
+          <label style="margin-top:8px;">Nomor Telepon</label>
+          <input id="buyerPhone" class="w3-input w3-border w3-round" required>
+
+          <label style="margin-top:8px;">Alamat Pengiriman</label>
+          <textarea id="buyerAddress" class="w3-input w3-border w3-round" rows="3" required></textarea>
+
+          <label style="margin-top:8px;">Metode Pembayaran</label>
+          <select id="checkoutPayMethod" class="w3-select w3-border w3-round" required>
+            <option value="" disabled selected>Pilih metode</option>
+            <option value="COD">COD (Bayar di tempat)</option>
+            <option value="Transfer">Transfer Bank</option>
+            <option value="E-Wallet">E-Wallet</option>
+          </select>
+
+          <label style="margin-top:8px;">Jasa Pengiriman</label>
+          <select id="checkoutShip" class="w3-select w3-border w3-round" required>
+            <option value="" disabled selected>Pilih jasa</option>
+            <option value="J&T" data-cost="15000">J&T — Rp 15.000</option>
+            <option value="SiCepat" data-cost="18000">SiCepat — Rp 18.000</option>
+            <option value="GrabExpress" data-cost="22000">GrabExpress — Rp 22.000</option>
+            <option value="Ninja" data-cost="20000">Ninja Xpress — Rp 20.000</option>
+          </select>
+
+          <div style="margin-top:12px;">
+            <div style="display:flex; justify-content:space-between;">
+              <div class="small">Subtotal</div>
+              <div id="modalSubtotal" class="small">Rp 0</div>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <div class="small">Total Diskon</div>
+              <div id="modalDiscount" class="small">Rp 0</div>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <div class="small">Pengiriman</div>
+              <div id="modalShipping" class="small">Rp 0</div>
+            </div>
+            <hr>
+            <div style="display:flex; justify-content:space-between; font-weight:700;">
+              <div>Total Bayar</div>
+              <div id="modalGrand" style="color:var(--accent)">Rp 0</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px; display:flex; gap:8px;">
+            <button type="submit" class="w3-button btn-primary w3-round">Bayar & Proses</button>
+            <button type="button" class="w3-button w3-white w3-round btn-outline" onclick="closeCheckoutModal()">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER CONFIRMATION MODAL -->
+  <div id="confirmModal" class="w3-modal" style="display:none">
+    <div class="w3-modal-content w3-animate-zoom w3-card-4">
+      <header class="w3-container" style="background:linear-gradient(90deg,var(--pink-mid),var(--pink-dark)); color:white;">
+        <h4>Konfirmasi Pesanan</h4>
+      </header>
+      <div class="w3-container" style="padding:18px;">
+        <div id="confirmBody" class="small"></div>
+        <div style="margin-top:14px;">
+          <button class="w3-button btn-primary w3-round" onclick="closeConfirmModal()">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ============================
+   Data produk (nama, gambar, harga asli, diskon%)
+   ============================ */
+const products = [
+  {
+    id: 'P001',
+    name: 'Floral Summer Dress',
+    image: 'floral summer.jpg',
+    priceOrig: 350000,
+    discountPercent: 20,
+    category: 'Dress'
+  },
+  {
+    id: 'P002',
+    name: 'Blouse Elegan Pink',
+    image: 'blouse.jpg',
+    priceOrig: 280000,
+    discountPercent: 18,
+    category: 'Blouse'
+  },
+  {
+    id: 'P003',
+    name: 'Gaun Satin Premium',
+    image: 'gaun satin.jpg',
+    priceOrig: 550000,
+    discountPercent: 15,
+    category: 'Dress'
+  },
+  {
+    id: 'P004',
+    name: 'Soft Cardigan Knit',
+    image: 'soft cardigan.jpg',
+    priceOrig: 320000,
+    discountPercent: 16,
+    category: 'Cardigan'
+  },
+  {
+    id: 'P005',
+    name: 'Midi Skirt Classic',
+    image: 'midi skirt.jpg',
+    priceOrig: 240000,
+    discountPercent: 10,
+    category: 'Skirt'
+  },
+  {
+    id: 'P006',
+    name: 'Outer Blazer Minimal',
+    image: 'outer blazer.jpg',
+    priceOrig: 420000,
+    discountPercent: 25,
+    category: 'Outer'
+  }
+];
+
+/* ============================
+   Cart operations + persistence
+   ============================ */
+let cart = loadCart();
+
+/* localStorage keys */
+const CART_KEY = 'elysia_cart_v1';
+
+/* Helpers: format currency (IDR) */
+function formatIDR(n){
+  // ensure integer arithmetic correctness
+  const v = Math.round(n);
+  return v.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits:0 });
+}
+
+/* Load cart from localStorage */
+function loadCart(){
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    if(raw) {
+      return JSON.parse(raw);
+    }
+  } catch(e){ console.warn('loadCart error', e); }
+  return [];
+}
+
+/* Save cart */
+function saveCart(){
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartCount();
+  } catch(e){ console.warn('saveCart error', e); }
+}
+
+/* Add product */
+function addToCart(productId){
+  const prod = products.find(p => p.id === productId);
+  if(!prod) return;
+  // if exists, increment qty, else add
+  const existing = cart.find(i => i.id === productId);
+  if(existing){
+    existing.qty += 1;
+  } else {
+    cart.push({ id: prod.id, name: prod.name, priceOrig: prod.priceOrig, discountPercent: prod.discountPercent, qty: 1 });
+  }
+  saveCart();
+  renderCartPanel();
+  renderCartOverview();
+  alert(prod.name + ' telah ditambahkan ke keranjang.');
+}
+
+/* Remove product */
+function removeFromCart(productId){
+  cart = cart.filter(i => i.id !== productId);
+  saveCart();
+  renderCartPanel();
+  renderCartOverview();
+}
+
+/* Update quantity */
+function updateQty(productId, qty){
+  qty = parseInt(qty) || 0;
+  if(qty <= 0){
+    removeFromCart(productId);
+    return;
+  }
+  const item = cart.find(i => i.id === productId);
+  if(item){ item.qty = qty; }
+  saveCart();
+  renderCartPanel();
+  renderCartOverview();
+}
+
+/* Clear cart */
+function clearCart(){
+  if(!confirm('Kosongkan seluruh keranjang?')) return;
+  cart = [];
+  saveCart();
+  renderCartPanel();
+  renderCartOverview();
+}
+
+/* ============================
+   Pricing calculations
+   ============================ */
+function calculateTotals(selectedShipCost = 0){
+  // returns object { subtotal, totalDiscount, shipping, grandTotal }
+  // subtotal = sum of (priceOrig * qty)
+  // totalDiscount = sum of (priceOrig * discount%/100 * qty)
+  // grandTotal = subtotal - totalDiscount + shipping
+  let subtotal = 0;
+  let totalDiscount = 0;
+  for(const item of cart){
+    const p = item.priceOrig;
+    const q = Number(item.qty || 0);
+    // calculate discount per item precisely
+    const discAmtPerItem = Math.round(p * item.discountPercent / 100);
+    subtotal += p * q;
+    totalDiscount += discAmtPerItem * q;
+  }
+  const shipping = Number(selectedShipCost) || 0;
+  const grandTotal = subtotal - totalDiscount + shipping;
+  return {
+    subtotal: Math.round(subtotal),
+    totalDiscount: Math.round(totalDiscount),
+    shipping: Math.round(shipping),
+    grandTotal: Math.round(grandTotal)
+  };
+}
+
+/* ============================
+   UI Rendering
+   ============================ */
+function renderCatalog(){
+  const grid = document.getElementById('productGrid');
+  const q = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+  const list = products.filter(p => !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  grid.innerHTML = '';
+  for(const p of list){
+    const discountedPrice = Math.round(p.priceOrig * (100 - p.discountPercent) / 100);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <div>
+        <img class="product-img" src="${p.image}" alt="${p.name}" />
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+          <div style="flex:1;">
+            <h4 style="margin:0 0 6px 0;">${escapeHtml(p.name)}</h4>
+            <div class="price-row">
+              <div class="orig-price">${formatIDR(p.priceOrig)}</div>
+              <div class="sale-price">${formatIDR(discountedPrice)}</div>
+            </div>
+            <div class="small muted" style="margin-top:6px;">Diskon ${p.discountPercent}%</div>
+          </div>
+          <div style="margin-left:12px;">
+            <button class="w3-button w3-round btn-primary" onclick="addToCart('${p.id}')">Tambah</button>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+/* render cart quick panel */
+function renderCartPanel(){
+  const body = document.getElementById('cartPanelBody');
+  if(!cart || cart.length === 0){
+    body.innerHTML = '<div class="small muted">Keranjang kosong.</div>';
+    return;
+  }
+  const container = document.createElement('div');
+  container.className = 'w3-small';
+  for(const item of cart){
+    const discountedPrice = Math.round(item.priceOrig * (100 - item.discountPercent)/100);
+    const row = document.createElement('div');
+    row.style = 'display:flex; gap:8px; align-items:center; padding:8px 0; border-bottom:1px solid rgba(0,0,0,0.04);';
+    row.innerHTML = `
+      <div style="flex:1;">
+        <div style="font-weight:600">${escapeHtml(item.name)}</div>
+        <div class="small muted">${formatIDR(discountedPrice)} x <input style="width:44px; display:inline-block; margin-left:6px;" type="number" min="1" value="${item.qty}" onchange="updateQty('${item.id}', this.value)"></div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-weight:700">${formatIDR(discountedPrice * item.qty)}</div>
+        <div><button class="w3-button w3-small w3-white w3-round btn-outline" onclick="removeFromCart('${item.id}')">Hapus</button></div>
+      </div>
+    `;
+    container.appendChild(row);
+  }
+  body.innerHTML = '';
+  body.appendChild(container);
+}
+
+/* cart overview / totals in checkout section */
+function renderCartOverview(){
+  const container = document.getElementById('cartItemsContainer');
+  if(!cart || cart.length === 0){
+    container.innerHTML = '<div class="small muted">Keranjang kosong.</div>';
+  } else {
+    const frag = document.createElement('div');
+    for(const item of cart){
+      const discountedPrice = Math.round(item.priceOrig * (100 - item.discountPercent)/100);
+      const r = document.createElement('div');
+      r.style = 'display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed rgba(0,0,0,0.04);';
+      r.innerHTML = `<div>${escapeHtml(item.name)} <span class="small muted">x ${item.qty}</span></div><div style="font-weight:600">${formatIDR(discountedPrice * item.qty)}</div>`;
+      frag.appendChild(r);
+    }
+    container.innerHTML = '';
+    container.appendChild(frag);
+  }
+  // update totals area using selected shipping cost
+  const shipSelect = document.getElementById('shipSelect');
+  let shipCost = 0;
+  if(shipSelect && shipSelect.value !== 'NONE'){
+    shipCost = Number(shipSelect.options[shipSelect.selectedIndex].getAttribute('data-cost') || 0);
+  }
+  const totals = calculateTotals(shipCost);
+  document.getElementById('subtotalText').innerText = formatIDR(totals.subtotal);
+  document.getElementById('discountText').innerText = '-' + formatIDR(totals.totalDiscount);
+  document.getElementById('shippingText').innerText = formatIDR(totals.shipping);
+  document.getElementById('grandTotalText').innerText = formatIDR(totals.grandTotal);
+
+  // update modal numbers too (if open)
+  document.getElementById('modalSubtotal').innerText = formatIDR(totals.subtotal);
+  document.getElementById('modalDiscount').innerText = '-' + formatIDR(totals.totalDiscount);
+  document.getElementById('modalShipping').innerText = formatIDR(totals.shipping);
+  document.getElementById('modalGrand').innerText = formatIDR(totals.grandTotal);
+
+  renderCartPanel();
+  saveCart();
+  updateCartCount();
+}
+
+/* update totals when shipping changed */
+function updateTotals(){
+  renderCartOverview();
+}
+
+/* cart count */
+function updateCartCount(){
+  const count = cart.reduce((s,i) => s + (Number(i.qty)||0), 0);
+  document.getElementById('cartCount').innerText = count;
+}
+
+/* toggle cart panel */
+function toggleCart(){
+  const panel = document.getElementById('cartPanel');
+  if(panel.style.display === 'block') panel.style.display = 'none';
+  else {
+    renderCartPanel();
+    panel.style.display = 'block';
+  }
+}
+
+/* open checkout modal */
+function openCheckoutModal(){
+  if(cart.length === 0){ alert('Keranjang masih kosong. Tambahkan produk terlebih dahulu.'); return; }
+  // set defaults in checkout modal (shipping) from side select if any
+  const sideShip = document.getElementById('shipSelect');
+  const modalShip = document.getElementById('checkoutShip');
+  if(sideShip && sideShip.value && sideShip.value !== 'NONE'){
+    modalShip.value = sideShip.value;
+  } else {
+    modalShip.selectedIndex = 0;
+  }
+  // update modal totals
+  const selectedShipOpt = modalShip.options[modalShip.selectedIndex];
+  const shipCost = Number(selectedShipOpt?.getAttribute('data-cost') || 0);
+  const totals = calculateTotals(shipCost);
+  document.getElementById('modalSubtotal').innerText = formatIDR(totals.subtotal);
+  document.getElementById('modalDiscount').innerText = '-' + formatIDR(totals.totalDiscount);
+  document.getElementById('modalShipping').innerText = formatIDR(totals.shipping);
+  document.getElementById('modalGrand').innerText = formatIDR(totals.grandTotal);
+
+  document.getElementById('checkoutModal').style.display = 'block';
+}
+
+/* close checkout */
+function closeCheckoutModal(){ document.getElementById('checkoutModal').style.display = 'none'; }
+
+/* when shipping select inside modal changes */
+document.getElementById('checkoutShip').addEventListener('change', function(){
+  const opt = this.options[this.selectedIndex];
+  const shipCost = Number(opt?.getAttribute('data-cost') || 0);
+  const totals = calculateTotals(shipCost);
+  document.getElementById('modalShipping').innerText = formatIDR(totals.shipping);
+  document.getElementById('modalGrand').innerText = formatIDR(totals.grandTotal);
+});
+
+/* handle checkout submit */
+function handleCheckout(e){
+  e.preventDefault();
+  // gather data
+  const name = document.getElementById('buyerName').value.trim();
+  const phone = document.getElementById('buyerPhone').value.trim();
+  const address = document.getElementById('buyerAddress').value.trim();
+  const payMethod = document.getElementById('checkoutPayMethod').value;
+  const shipOpt = document.getElementById('checkoutShip');
+  const shipName = shipOpt.options[shipOpt.selectedIndex].value;
+  const shipCost = Number(shipOpt.options[shipOpt.selectedIndex].getAttribute('data-cost') || 0);
+
+  if(!name || !phone || !address || !payMethod || !shipName){
+    alert('Lengkapi semua data pengiriman dan pembayaran.');
+    return;
+  }
+
+  // compute totals
+  const totals = calculateTotals(shipCost);
+
+  // build order summary
+  const orderId = 'EL' + Date.now().toString().slice(-8).toUpperCase();
+  const order = {
+    id: orderId,
+    name, phone, address, payMethod, shipName, shipCost,
+    items: cart.map(i => ({ id: i.id, name: i.name, qty: i.qty, priceOrig: i.priceOrig, discountPercent: i.discountPercent })),
+    totals,
+    createdAt: new Date().toISOString()
+  };
+
+  // Simulate payment processing:
+  // - if Transfer or E-Wallet, show pseudo-instruction
+  // - COD completes immediately
+  let confirmHtml = `<p>Pesanan Anda berhasil dibuat dengan Order ID: <strong>${order.id}</strong></p>`;
+  confirmHtml += `<p><strong>Nama:</strong> ${escapeHtml(order.name)}<br/><strong>Alamat:</strong> ${escapeHtml(order.address)}<br/><strong>Telp:</strong> ${escapeHtml(order.phone)}</p>`;
+  confirmHtml += `<p><strong>Metode Pembayaran:</strong> ${escapeHtml(order.payMethod)}<br/><strong>Kurir:</strong> ${escapeHtml(order.shipName)} — ${formatIDR(order.totals.shipping)}</p>`;
+  confirmHtml += `<hr><div><strong>Rincian Pesanan:</strong></div>`;
+  confirmHtml += '<ul>';
+  for(const it of order.items){
+    const priceAfter = Math.round(it.priceOrig * (100 - it.discountPercent)/100);
+    confirmHtml += `<li>${escapeHtml(it.name)} — ${it.qty} x ${formatIDR(priceAfter)} = ${formatIDR(priceAfter * it.qty)}</li>`;
+  }
+  confirmHtml += '</ul>';
+  confirmHtml += `<div style="margin-top:6px;"><strong>Subtotal:</strong> ${formatIDR(order.totals.subtotal)}<br/><strong>Total Diskon:</strong> -${formatIDR(order.totals.totalDiscount)}<br/><strong>Pengiriman:</strong> ${formatIDR(order.totals.shipping)}<br/><strong>Total Bayar:</strong> ${formatIDR(order.totals.grandTotal)}</div>`;
+
+  if(order.payMethod === 'Transfer'){
+    confirmHtml += `<hr><div class="small"><strong>Instruksi Transfer:</strong><br>Silakan transfer ke Rekening BCA 123-456-789 a.n. Elysia Fashion. Setelah transfer, konfirmasi ke WhatsApp 0812-3456-7890.</div>`;
+  } else if(order.payMethod === 'E-Wallet'){
+    confirmHtml += `<hr><div class="small"><strong>Instruksi E-Wallet:</strong><br>Gunakan OVO/Dana/GoPay dan transfer sebesar ${formatIDR(order.totals.grandTotal)} ke nomor 0812-3456-7890, lalu konfirmasi.</div>`;
+  } else {
+    confirmHtml += `<hr><div class="small"><strong>COD:</strong> Bayar pesanan saat kurir melakukan pengantaran.</div>`;
+  }
+
+  // clear cart after placing order
+  cart = [];
+  saveCart();
+  renderCartOverview();
+  renderCartPanel();
+
+  // show confirmation modal
+  document.getElementById('confirmBody').innerHTML = confirmHtml;
+  document.getElementById('checkoutModal').style.display = 'none';
+  document.getElementById('confirmModal').style.display = 'block';
+}
+
+/* close confirm modal */
+function closeConfirmModal(){ document.getElementById('confirmModal').style.display = 'none'; }
+
+/* utility: scroll to section */
+function scrollToSection(id){
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* utility: escape html */
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/[&<>"'`=\/]/g, function(s){
+    return ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;', '/':'&#x2F;','`':'&#x60;','=':'&#x3D;'
+    })[s];
+  });
+}
+
+/* init rendering */
+(function init(){
+  renderCatalog();
+  renderCartOverview();
+  updateCartCount();
+})();
+
+/* allow Enter to add to cart when focused on search (optional) */
+document.getElementById('searchInput').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){ e.preventDefault(); }
+});
+</script>
+
+</body>
+</html> 
